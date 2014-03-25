@@ -1,10 +1,10 @@
 {
-  "name": "eslint",
+  "name": "eslint-jsx",
   "version": "0.4.5",
   "author": "Nicholas C. Zakas <nicholas+npm@nczconsulting.com>",
   "description": "An Esprima-based pattern checker for JavaScript.",
   "bin": {
-    "eslint": "./bin/eslint.js"
+    "eslint-jsx": "./bin/eslint.js"
   },
   "main": "./lib/api.js",
   "scripts": {
@@ -33,9 +33,9 @@
   "bugs": "https://github.com/eslint/eslint/issues/",
   "dependencies": {
     "optionator": "~0.1.1",
-    "estraverse": "~1.3.0",
+    "estraverse-jsx": "git+https://github.com/andreypopp/estraverse#jsx",
     "esprima-fb": "^3001.1.0-dev-harmony-fb",
-    "escope": "~1.0.0",
+    "escope": "git+https://github.com/andreypopp/escope#pluggable-traverser",
     "glob": "~3.2.7",
     "js-yaml": "~3.0.1",
     "optionator": "~0.1.1",
