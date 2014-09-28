@@ -52,7 +52,7 @@ describe("options", function() {
     describe("when passed --rulesdir", function() {
         it("should return a string for .rulesdir", function() {
             var currentOptions = options.parse("--rulesdir /morerules");
-            assert.isString(currentOptions.rulesdir);
+            assert.isArray(currentOptions.rulesdir);
             assert.equal(currentOptions.rulesdir, "/morerules");
         });
     });
@@ -91,6 +91,85 @@ describe("options", function() {
         it("should return string of help text", function() {
             var helpText = options.generateHelp();
             assert.isString(helpText);
+        });
+    });
+
+    describe("when passed --no-ignore", function() {
+        it("should return false for .ignore", function() {
+            var currentOptions = options.parse("--no-ignore");
+            assert.isFalse(currentOptions.ignore);
+        });
+    });
+
+    describe("when passed --ignore-path", function() {
+        it("should return a string for .ignorePath", function() {
+            var currentOptions = options.parse("--ignore-path .gitignore");
+            assert.equal(currentOptions.ignorePath, ".gitignore");
+        });
+    });
+
+    describe("when passed --color", function() {
+        it("should return true for .color", function() {
+            var currentOptions = options.parse("--color");
+            assert.isTrue(currentOptions.color);
+        });
+    });
+
+    describe("when passed --global", function() {
+        it("should return an array for a single occurrence", function () {
+            var currentOptions = options.parse("--global foo");
+            assert.isArray(currentOptions.global);
+            assert.equal(currentOptions.global.length, 1);
+            assert.equal(currentOptions.global[0], "foo");
+        });
+
+        it("should split variable names using commas", function() {
+            var currentOptions = options.parse("--global foo,bar");
+            assert.isArray(currentOptions.global);
+            assert.equal(currentOptions.global.length, 2);
+            assert.equal(currentOptions.global[0], "foo");
+            assert.equal(currentOptions.global[1], "bar");
+        });
+
+        it("should not split on colons", function() {
+            var currentOptions = options.parse("--global foo:false,bar:true");
+            assert.isArray(currentOptions.global);
+            assert.equal(currentOptions.global.length, 2);
+            assert.equal(currentOptions.global[0], "foo:false");
+            assert.equal(currentOptions.global[1], "bar:true");
+        });
+
+        it("should concatenate successive occurrences", function() {
+            var currentOptions = options.parse("--global foo:true --global bar:false");
+            assert.isArray(currentOptions.global);
+            assert.equal(currentOptions.global.length, 2);
+            assert.equal(currentOptions.global[0], "foo:true");
+            assert.equal(currentOptions.global[1], "bar:false");
+        });
+    });
+
+    describe("when passed --plugin", function() {
+        it("should return an array for a single occurrence", function () {
+            var currentOptions = options.parse("--plugin single");
+            assert.isArray(currentOptions.plugin);
+            assert.equal(currentOptions.plugin.length, 1);
+            assert.equal(currentOptions.plugin[0], "single");
+        });
+
+        it("should split variable names using commas", function() {
+            var currentOptions = options.parse("--plugin foo,bar");
+            assert.isArray(currentOptions.plugin);
+            assert.equal(currentOptions.plugin.length, 2);
+            assert.equal(currentOptions.plugin[0], "foo");
+            assert.equal(currentOptions.plugin[1], "bar");
+        });
+
+        it("should concatenate successive occurrences", function() {
+            var currentOptions = options.parse("--plugin foo --plugin bar");
+            assert.isArray(currentOptions.plugin);
+            assert.equal(currentOptions.plugin.length, 2);
+            assert.equal(currentOptions.plugin[0], "foo");
+            assert.equal(currentOptions.plugin[1], "bar");
         });
     });
 });

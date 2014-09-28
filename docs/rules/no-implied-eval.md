@@ -1,4 +1,4 @@
-# Disallow Implied eval()
+# Disallow Implied eval() (no-implied-eval)
 
 It's considered a good practice to avoid using `eval()` in JavaScript. There are security and performance implications involved with doing so, which is why many linters (including ESLint) disallow `eval()` by default. However, there are some other ways to pass a string and have it interpreted as JavaScript code that have similar concerns.
 
@@ -50,3 +50,7 @@ If you want to allow `setTimeout()` and `setInterval()` with string arguments, t
 ## Further Reading
 
 * [Implied eval is evil. Pass a function instead of a string.](http://jslinterrors.com/implied-eval-is-evil-pass-a-function-instead-of-a-string/)
+
+## Related Rules
+
+* [no-eval](no-eval.md)

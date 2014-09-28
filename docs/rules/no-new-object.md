@@ -1,4 +1,4 @@
-# Disallow new Object
+# Disallow new Object (no-new-object)
 
 The `Object` constructor is used to create new generic objects in JavaScript, such as:
 
@@ -40,3 +40,7 @@ var myObject = {};
 
 If you wish to allow the use of the `Object` constructor, you can safely turn this rule off.
 
+## Related Rules
+
+* [no-array-constructor](no-array-constructor.md)
+* [no-new-wrappers](no-new-wrappers.md)

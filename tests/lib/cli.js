@@ -10,7 +10,9 @@
 var assert = require("chai").assert,
     cli = require("../../lib/cli"),
     path = require("path"),
-    sinon = require("sinon");
+    sinon = require("sinon"),
+    fs = require("fs"),
+    sh = require("shelljs");
 
 //------------------------------------------------------------------------------
 // Tests
@@ -19,8 +21,8 @@ var assert = require("chai").assert,
 describe("cli", function() {
 
     beforeEach(function() {
-        sinon.stub(console, "log").returns(undefined);
-        sinon.stub(console, "error").returns(undefined);
+        sinon.stub(console, "log").returns(void 0);
+        sinon.stub(console, "error").returns(void 0);
     });
 
     afterEach(function() {
@@ -54,14 +56,12 @@ describe("cli", function() {
     });
 
     describe("when given a config with rules with options and severity level set to error", function() {
-        var code = "--config tests/fixtures/configurations/quotes-error.json single-quoted.js";
+        var code = "--config tests/fixtures/configurations/quotes-error.json tests/fixtures/single-quoted.js";
 
         it("should exit with an error status (1)", function() {
             var exitStatus;
 
-            assert.doesNotThrow(function () {
-                exitStatus = cli.execute(code);
-            });
+            exitStatus = cli.execute(code);
 
             assert.equal(exitStatus, 1);
         });
@@ -133,9 +133,17 @@ describe("cli", function() {
         });
     });
 
-    describe("when executing a file with an error", function() {
-        it("should execute with error", function() {
-            var exit = cli.execute("tests/fixtures/configurations/semi-error.js");
+    describe("when executing a file with a lint error", function() {
+        it("should exit with error", function() {
+            var exit = cli.execute("--no-ignore tests/fixtures/undef.js");
+
+            assert.equal(exit, 1);
+        });
+    });
+
+    describe("when executing a file with a syntax error", function() {
+        it("should exit with error", function() {
+            var exit = cli.execute("--no-ignore tests/fixtures/syntax-error.js");
 
             assert.equal(exit, 1);
         });
@@ -143,12 +151,12 @@ describe("cli", function() {
 
     describe("when calling execute more than once", function() {
         it("should not print the results from previous execution", function() {
-            cli.execute("tests/fixtures/missing-semicolon.js");
-            assert.isTrue(console.log.called);
+            cli.execute("--no-ignore tests/fixtures/missing-semicolon.js");
+            assert.isTrue(console.log.called, "Log should have been called.");
 
             console.log.reset();
 
-            cli.execute("tests/fixtures/passing.js");
+            cli.execute("--no-ignore tests/fixtures/passing.js");
             assert.isTrue(console.log.notCalled);
 
         });
@@ -170,26 +178,9 @@ describe("cli", function() {
         });
     });
 
-    describe("when given a directory with eslint excluded files", function() {
-        it("should not process any files", function() {
-            cli.execute("tests/fixtures");
-
-            assert.isTrue(console.log.notCalled);
-        });
-    });
-
-    describe("when given a directory with jshint excluded files", function() {
-        it("should not process any files", function() {
-            cli.execute("tests/fixtures");
-
-            assert.isTrue(console.log.notCalled);
-        });
-    });
-
     describe("when given a directory with eslint excluded files in the directory", function() {
         it("should not process any files", function() {
-            var exit = cli.execute("tests/fixtures");
-
+            var exit = cli.execute("--ignore-path tests/fixtures/.eslintignore tests/fixtures");
             assert.isTrue(console.log.notCalled);
             assert.equal(exit, 0);
         });
@@ -197,11 +188,19 @@ describe("cli", function() {
 
     describe("when given a file in excluded files list", function() {
 
-        it("should process the file anyway", function() {
-            var exit = cli.execute("tests/fixtures/missing-semicolon.js");
+        it("should not process the file", function () {
+            var exit = cli.execute("--ignore-path tests/fixtures/.eslintignore tests/fixtures/passing.js");
 
+            // a warning about the ignored file
             assert.isTrue(console.log.called);
-            assert.isFalse(console.log.alwaysCalledWith(""));
+            assert.equal(exit, 0);
+        });
+
+        it("should process the file when forced", function() {
+            var exit = cli.execute("--ignore-path tests/fixtures/.eslintignore --no-ignore tests/fixtures/passing.js");
+
+            // no warnings
+            assert.isFalse(console.log.called);
             assert.equal(exit, 0);
         });
     });
@@ -209,36 +208,68 @@ describe("cli", function() {
     describe("when executing a file with a shebang", function() {
 
         it("should execute without error", function() {
-            var exit = cli.execute("tests/fixtures/shebang.js");
+            var exit = cli.execute("--no-ignore tests/fixtures/shebang.js");
 
             assert.equal(exit, 0);
         });
     });
 
-    describe("when given a custom rule, verify that it's loaded", function() {
-        var code = "--rulesdir ./tests/fixtures/rules --config ./tests/fixtures/rules/eslint.json tests/fixtures/rules/test/test-custom-rule.js";
+    describe("when loading a custom rule", function() {
 
-        it("should return a warning", function() {
-            var exit = cli.execute(code);
+        it("should return an error when rule isn't found", function() {
+            var code = "--rulesdir ./tests/fixtures/rules/wrong --config ./tests/fixtures/rules/eslint.json --no-ignore tests/fixtures/rules/test/test-custom-rule.js";
+
+            assert.throws(function() {
+                var exit = cli.execute(code);
+                assert.equal(exit, 1);
+            }, /Error while loading rule 'custom-rule': Cannot read property/);
+        });
+
+        it("should return a warning when rule is matched", function() {
+            var code = "--rulesdir ./tests/fixtures/rules --config ./tests/fixtures/rules/eslint.json --no-ignore tests/fixtures/rules/test/test-custom-rule.js";
+
+            cli.execute(code);
 
             assert.isTrue(console.log.calledOnce);
             assert.isTrue(console.log.neverCalledWith(""));
+        });
+
+        it("should return warnings from multiple rules in different directories", function() {
+            var code = "--rulesdir ./tests/fixtures/rules/dir1 --rulesdir ./tests/fixtures/rules/dir2 --reset --config ./tests/fixtures/rules/multi-rulesdirs.json --no-ignore tests/fixtures/rules/test-multi-rulesdirs.js";
+            var exit = cli.execute(code);
+
+            var call = console.log.getCall(0);
+            assert.isTrue(console.log.calledOnce);
+            assert.isTrue(call.args[0].indexOf("String!") > -1);
+            assert.isTrue(call.args[0].indexOf("Literal!") > -1);
+            assert.isTrue(call.args[0].indexOf("2 problems") > -1);
+            assert.isTrue(console.log.neverCalledWith(""));
             assert.equal(exit, 1);
         });
+
+
     });
 
     describe("when executing with reset flag", function() {
         it("should execute without any errors", function () {
-            var exit = cli.execute("--reset --no-eslintrc ./tests/fixtures/missing-semicolon.js");
+            var exit = cli.execute("--reset --no-eslintrc --no-ignore ./tests/fixtures/missing-semicolon.js");
 
             assert.isTrue(console.log.notCalled);
             assert.equal(exit, 0);
         });
+
+        it("should execute without any errors in Node.js environment", function () {
+            var exit = cli.execute("--reset --no-eslintrc --env node --no-ignore ./tests/fixtures/process-exit.js");
+
+            assert.isTrue(console.log.notCalled);
+            assert.equal(exit, 0);
+        });
+
     });
 
     describe("when executing with no-eslintrc flag", function () {
         it("should ignore a local config file", function () {
-            var exit = cli.execute("--no-eslintrc ./tests/fixtures/eslintrc/quotes.js");
+            var exit = cli.execute("--reset --no-eslintrc --no-ignore ./tests/fixtures/eslintrc/quotes.js");
 
             assert.isTrue(console.log.notCalled);
             assert.equal(exit, 0);
@@ -247,22 +278,10 @@ describe("cli", function() {
 
     describe("when executing without no-eslintrc flag", function () {
         it("should load a local config file", function () {
-            var exit = cli.execute("./tests/fixtures/eslintrc/quotes.js");
+            var exit = cli.execute("--no-ignore ./tests/fixtures/eslintrc/quotes.js");
 
             assert.isTrue(console.log.calledOnce);
             assert.equal(exit, 1);
-        });
-    });
-
-    describe("when executing with env flag", function () {
-        var files = [
-            "./tests/fixtures/globals-browser.js",
-            "./tests/fixtures/globals-node.js"
-        ];
-
-        it("should allow environment-specific globals", function () {
-            cli.execute("--no-eslintrc --config ./conf/eslint.json --env browser,node " + files.join(" "));
-            assert.equal(console.log.args[0][0].split("\n").length, 11);
         });
     });
 
@@ -273,8 +292,85 @@ describe("cli", function() {
         ];
 
         it("should not define environment-specific globals", function () {
-            cli.execute("--no-eslintrc --config ./conf/eslint.json " + files.join(" "));
-            assert.equal(console.log.args[0][0].split("\n").length, 14);
+            cli.execute("--reset --no-eslintrc --config ./conf/eslint.json --no-ignore " + files.join(" "));
+            assert.equal(console.log.args[0][0].split("\n").length, 12);
+        });
+    });
+
+    describe("when executing with global flag", function () {
+        it("should default defined variables to read-only", function () {
+            var exit = cli.execute("--global baz,bat --no-ignore ./tests/fixtures/undef.js");
+
+            assert.isTrue(console.log.calledOnce);
+            assert.equal(exit, 1);
+        });
+
+        it("should allow defining writable global variables", function () {
+            var exit = cli.execute("--reset --global baz:false,bat:true --no-ignore ./tests/fixtures/undef.js");
+
+            assert.isTrue(console.log.notCalled);
+            assert.equal(exit, 0);
+        });
+
+        it("should allow defining variables with multiple flags", function () {
+            var exit = cli.execute("--reset --global baz --global bat:true --no-ignore ./tests/fixtures/undef.js");
+
+            assert.isTrue(console.log.notCalled);
+            assert.equal(exit, 0);
+        });
+    });
+
+    describe("when supplied with rule flag and severity level set to error", function() {
+        var code = "--rule 'quotes: [2, double]' tests/fixtures/single-quoted.js";
+
+        it("should exit with an error status (1)", function() {
+            var exitStatus;
+
+            exitStatus = cli.execute(code);
+
+            assert.equal(exitStatus, 1);
+        });
+    });
+
+    describe("when supplied with report output file path", function() {
+
+        afterEach(function () {
+            sh.rm("-rf", "tests/output");
+        });
+
+        it("should write the file and create dirs if they don't exist", function () {
+            var code = "--o tests/output/eslint-output.txt tests/fixtures/single-quoted.js";
+
+            cli.execute(code);
+
+            assert.include(fs.readFileSync("tests/output/eslint-output.txt", "utf8"), "tests/fixtures/single-quoted.js");
+            assert.isTrue(console.log.notCalled);
+        });
+
+        it("should return an error if the path is a directory", function () {
+            var code = "--o tests/output tests/fixtures/single-quoted.js";
+            var exit;
+
+            fs.mkdirSync("tests/output");
+
+            exit = cli.execute(code);
+
+            assert.equal(exit, 1);
+            assert.isTrue(console.log.notCalled);
+            assert.isTrue(console.error.calledOnce);
+        });
+
+        it("should return an error if the path could not be written to", function () {
+            var code = "--o tests/output/eslint-output.txt tests/fixtures/single-quoted.js";
+            var exit;
+
+            fs.writeFileSync("tests/output", "foo");
+
+            exit = cli.execute(code);
+
+            assert.equal(exit, 1);
+            assert.isTrue(console.log.notCalled);
+            assert.isTrue(console.error.calledOnce);
         });
     });
 });

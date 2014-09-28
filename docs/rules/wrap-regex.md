@@ -1,22 +1,22 @@
-# Require Regex Literals to be Wrapped
+# Require Regex Literals to be Wrapped (wrap-regex)
 
-When a regular expression is used in certain situation, it can end up looking like a divison operator. For example:
+When a regular expression is used in certain situation, it can end up looking like a division operator. For example:
 
 ```js
-function a() { 
+function a() {
     return /foo/.test("bar");
 }
 ```
 
 ## Rule Details
 
-This is used to disambuguate the slash operator and facilitates in more readable code.
+This is used to disambiguate the slash operator and facilitates in more readable code.
 
 The following patterns are considered warnings:
 
 ```js
 function a() {
-    return /foo/.test("bar"); 
+    return /foo/.test("bar");
 }
 ```
 

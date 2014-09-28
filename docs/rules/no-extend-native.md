@@ -1,4 +1,4 @@
-# Disallow Extending of Native Objects
+# Disallow Extending of Native Objects (no-extend-native)
 
 In JavaScript, you can extend any object, including builtin or "native" objects. Sometimes people change the behavior of these native objects in ways that break the assumptions made about them in other parts of the code.
 
@@ -39,3 +39,7 @@ It *does not* check for any of the following less obvious approaches:
 ## When Not To Use It
 
 You may want to disable this rule when working with polyfills that try to patch older versions of JavaScript with the latest spec, such as those that might `Function.prototype.bind` or `Array.prototype.forEach` in a future-friendly way.
+
+## Related Rules
+
+* [no-native-reassign](no-native-reassign.md)

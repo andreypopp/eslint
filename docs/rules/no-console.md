@@ -1,4 +1,4 @@
-# Disallow Use of console
+# Disallow Use of console (no-console)
 
 In JavaScript that is designed to be executed in the browser, it's considered a best practice to avoid using methods on `console`. Such messages are considered to be for debugging purposes and therefore not suitable to ship to the client. In general, calls using `console` should be stripped before being pushed to production.
 
@@ -33,3 +33,8 @@ If you're using Node.js, however, `console` is used to output information to the
 ## Further Reading
 
 * [Use Uglify to automatically strip debug messages from your JavaScript](http://jstarrdewar.com/blog/2013/02/28/use-uglify-to-automatically-strip-debug-messages-from-your-javascript)
+
+## Related Rules
+
+* [no-alert](no-alert.md)
+* [no-debugger](no-debugger.md)

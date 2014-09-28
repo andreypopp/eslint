@@ -28,7 +28,9 @@ describe("rules", function() {
         var code = "invaliddir";
 
         it("should log an error and exit", function() {
-            assert.throws(function() { rules.load(code); });
+            assert.throws(function() {
+                rules.load(code);
+            });
         });
     });
 
@@ -47,6 +49,22 @@ describe("rules", function() {
             var ruleId = "michaelficarra";
             rules.define(ruleId, {});
             assert.ok(rules.get(ruleId));
+        });
+    });
+
+    describe("when importing plugin rules", function () {
+        var customPlugin = {
+                rules: {
+                    "custom-rule": function () { }
+                }
+            },
+            pluginName = "custom-plugin";
+
+        it("should define all plugin rules with a qualified rule id", function () {
+            rules.import(customPlugin.rules, pluginName);
+
+            assert.isDefined(rules.get("custom-plugin/custom-rule"));
+            assert.equal(rules.get("custom-plugin/custom-rule"), customPlugin.rules["custom-rule"]);
         });
     });
 });

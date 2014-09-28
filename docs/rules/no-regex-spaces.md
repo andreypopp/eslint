@@ -1,4 +1,4 @@
-# Disallow Spaces in Regular Expressions
+# Disallow Spaces in Regular Expressions (no-regex-spaces)
 
 Regular expressions can be very complex and difficult to understand, which is why it's important to keep them as simple as possible in order to avoid mistakes. One of the more error-prone things you can do with a regular expression is to use more than one space, such as:
 
@@ -37,3 +37,8 @@ If you want to allow multiple spaces in a regular expression, then you can safel
 ## Further Reading
 
 * [Spaces are hard to count](http://jslinterrors.com/spaces-are-hard-to-count-use-a/)
+
+## Related Rules
+
+* [no-div-regex](no-div-regex.md)
+* [no-control-regex](no-control-regex.md)

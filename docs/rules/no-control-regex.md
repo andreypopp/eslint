@@ -1,4 +1,4 @@
-# Disallow Controls Characters in Regular Expressions
+# Disallow Controls Characters in Regular Expressions (no-control-regex)
 
 Control characters are special, invisible characters in the ASCII range 0-31. These characters are rarely used in JavaScript strings so a regular expression containing these characters is most likely a mistake.
 
@@ -24,3 +24,9 @@ var pattern2 = new RegExp("\x20");
 ## When Not To Use It
 
 If you need to use control character pattern matching, then you should turn this rule off.
+
+## Related Rules
+
+* [no-div-regex](no-div-regex.md)
+* [no-regex-spaces](no-regex-spaces.md)
+

@@ -7,12 +7,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var eslintTester = require("eslint-tester");
+var eslint = require("../../../lib/eslint"),
+    ESLintTester = require("eslint-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
+var eslintTester = new ESLintTester(eslint);
 eslintTester.addRuleTest("lib/rules/no-undef", {
     valid: [
         "var a = 1, b = 2; a;",
@@ -29,6 +31,8 @@ eslintTester.addRuleTest("lib/rules/no-undef", {
         "/*eslint-env browser*/ window;",
         "/*eslint-env node*/ require(\"a\");",
         "Object; isNaN();",
+        "toString()",
+        "hasOwnProperty()",
         "function evilEval(stuffToEval) { var ultimateAnswer; ultimateAnswer = 42; eval(stuffToEval); }"
     ],
     invalid: [

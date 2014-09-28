@@ -15,11 +15,11 @@ var assert = require("chai").assert,
 
 describe("util", function() {
     describe("when calling mixin()", function() {
-        var code = function() {
+        function code() {
             var a = {}, b = { foo: "f", bar: 1 };
             util.mixin(a, b);
             return [a, b];
-        };
+        }
 
         it("should add properties to target object", function() {
             var a = code()[0];
@@ -76,6 +76,44 @@ describe("util", function() {
             assert.isArray(result.rules["no-mixed-requires"]);
             assert.equal(result.rules["no-mixed-requires"][0], 1);
             assert.equal(result.rules["no-mixed-requires"][1], false);
+        });
+    });
+
+    describe("when merging two configs with plugin entries", function () {
+        var baseConfig;
+
+        beforeEach(function () {
+            baseConfig = { plugins: ["foo", "bar"] };
+        });
+
+        it("should combine the plugin entries", function () {
+            var customConfig = { plugins: ["baz"] },
+                expectedResult = { plugins: ["foo", "bar", "baz"] },
+                result;
+
+            result = util.mergeConfigs(baseConfig, customConfig);
+
+            assert.deepEqual(result, expectedResult);
+        });
+
+        it("should avoid duplicate plugin entries", function () {
+            var customConfig = { plugins: ["bar"] },
+                expectedResult = { plugins: ["foo", "bar"] },
+                result;
+
+            result = util.mergeConfigs(baseConfig, customConfig);
+
+            assert.deepEqual(result, expectedResult);
+        });
+
+        it("should be able to copy a customConfig with plugin entries", function () {
+            var customConfig = { plugins: ["foo"] },
+                result;
+
+            result = util.mergeConfigs({}, customConfig);
+
+            assert.deepEqual(result, customConfig);
+            assert.notEqual(result, customConfig);
         });
     });
 });

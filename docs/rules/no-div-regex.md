@@ -1,4 +1,4 @@
-# Disallow Regexs That Look Like Division
+# Disallow Regexs That Look Like Division (no-div-regex)
 
 Require regex literals to escape division operators.
 
@@ -21,3 +21,8 @@ The following patterns adhere to this rule:
 ```js
 function() { return /\=foo/; }
 ```
+
+## Related Rules
+
+* [no-control-regex](no-control-regex.md)
+* [no-regex-spaces](no-regex-spaces.md)

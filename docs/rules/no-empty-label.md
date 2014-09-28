@@ -1,4 +1,4 @@
-# No empty labels
+# No empty labels (no-empty-label)
 
 Labeled statements are only used in conjunction with labeled break and continue statements. ECMAScript has no goto statement.
 
@@ -13,7 +13,6 @@ The following patterns are considered warnings:
 labeled: //Label for the following var statement
     var x = 10;
 };
-
 ```
 
 The following patterns are not considered warnings:
@@ -24,3 +23,4 @@ labeled:
         ...
     }
 };
+```

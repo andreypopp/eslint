@@ -1,4 +1,4 @@
-# Disallow Sparse Arrays
+# Disallow Sparse Arrays (no-sparse-arrays)
 
 Sparse arrays contain empty slots, most frequently due to multiple commas being used in an array literal, such as:
 
@@ -44,4 +44,3 @@ If you want to use sparse arrays, then it is safe to disable this rule.
 ## Further Reading
 
 * [Inconsistent array literals](http://www.nczonline.net/blog/2007/09/09/inconsistent-array-literals/)
-*

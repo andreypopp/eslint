@@ -1,4 +1,4 @@
-# Disallow Labeled Statements
+# Disallow Labeled Statements (no-labels)
 
 Labeled statements in JavaScript are used in conjunction with `break` and `continue` to control flow around multiple loops. For example:
 
@@ -18,7 +18,7 @@ While convenient in some cases, labels tend to be used only rarely and are frown
 
 ## Rule Details
 
-This rule aims to elminate the use of labeled statements in JavaScript. It will warn whenever a labeled statement is encountered and whenever `break` or `continue` are used with a label.
+This rule aims to eliminate the use of labeled statements in JavaScript. It will warn whenever a labeled statement is encountered and whenever `break` or `continue` are used with a label.
 
 The following patterns are considered warnings:
 

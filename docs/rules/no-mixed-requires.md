@@ -1,4 +1,4 @@
-# Disallow Mixed Requires
+# Disallow Mixed Requires (no-mixed-requires)
 
 In the Node.JS community it is often customary to separate the `require`d modules from other variable declarations, sometimes also grouping them by their type. This rule helps you enforce this convention.
 
@@ -18,6 +18,7 @@ This rule comes with one boolean option called `grouping` which is turned off by
     "no-mixed-requires": [1, true]
 }
 ```
+
 If enabled, violations will be reported whenever a single `var` statement contains require declarations of mixed types (see the examples below).
 
 #### Nomenclature
@@ -32,6 +33,7 @@ This rule distinguishes between six kinds of variable declaration types:
 In this document, the first four types are summed up under the term *require declaration*.
 
 ###### Example
+
 ```javascript
 var fs = require('fs'),        // "core"     \
     async = require('async'),  // "module"   |- these are "require declaration"s

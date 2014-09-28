@@ -1,4 +1,4 @@
-# Disallow Function Assigment
+# Disallow Function Assignment (no-func-assign)
 
 JavaScript functions can be written as a FunctionDeclaration `function foo() { ... }` or as a FunctionExpression `var foo = function() { ... };`. While a JavaScript interpreter might tolerate it, overwriting/reassigning a function written as a FunctionDeclaration is often indicative of a mistake or issue.
 
@@ -23,6 +23,7 @@ function foo {
 ```
 
 Unlike the same rule in JSHint, the following pattern is also considered a warning:
+
 ```js
 foo = bar;
 function foo() {}
