@@ -6,12 +6,14 @@
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
-var eslintTester = require("eslint-tester");
+var eslint = require("../../../lib/eslint"),
+    ESLintTester = require("eslint-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
+var eslintTester = new ESLintTester(eslint);
 eslintTester.addRuleTest("lib/rules/max-len", {
     valid: [
         {
@@ -23,6 +25,10 @@ eslintTester.addRuleTest("lib/rules/max-len", {
         }, {
             code: "var i = 1;\r\nvar i = 1;\n",
             args: [1, 10, 4]
+        },
+        {
+            code: "\n// Blank line on top\nvar foo = module.exports = {};\n",
+            args: [1, 80, 4]
         },
         ""
     ],

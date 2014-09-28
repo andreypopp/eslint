@@ -1,28 +1,35 @@
 /**
- * @fileoverview Tests for no-yoda rule.
+ * @fileoverview Tests for yoda rule.
  * @author Raphael Pigulla
  */
 
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
-var eslintTester = require("eslint-tester");
+var eslint = require("../../../lib/eslint"),
+    ESLintTester = require("eslint-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-eslintTester.addRuleTest("lib/rules/no-yoda", {
+var eslintTester = new ESLintTester(eslint);
+eslintTester.addRuleTest("lib/rules/yoda", {
     valid: [
-        "if (value === \"red\") {}",
-        "if (value === value) {}",
-        "if (value != 5) {}",
-        "if (5 & foo) {}"
+        { code: "if (value === \"red\") {}", args: ["2", "never"] },
+        { code: "if (value === value) {}", args: ["2", "never"] },
+        { code: "if (value != 5) {}", args: ["2", "never"] },
+        { code: "if (5 & foo) {}", args: ["2", "never"] },
+        { code: "if (\"blue\" === value) {}", args: ["2", "always"] },
+        { code: "if (value === value) {}", args: ["2", "always"] },
+        { code: "if (4 != value) {}", args: ["2", "always"] },
+        { code: "if (foo & 4) {}", args: ["2", "always"] }
     ],
     invalid: [
 
         {
             code: "if (\"red\" == value) {}",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of ==.",
@@ -32,6 +39,7 @@ eslintTester.addRuleTest("lib/rules/no-yoda", {
         },
         {
             code: "if (true === value) {}",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of ===.",
@@ -41,6 +49,7 @@ eslintTester.addRuleTest("lib/rules/no-yoda", {
         },
         {
             code: "if (5 != value) {}",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of !=.",
@@ -50,6 +59,7 @@ eslintTester.addRuleTest("lib/rules/no-yoda", {
         },
         {
             code: "if (null !== value) {}",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of !==.",
@@ -59,6 +69,7 @@ eslintTester.addRuleTest("lib/rules/no-yoda", {
         },
         {
             code: "if (\"red\" <= value) {}",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of <=.",
@@ -68,6 +79,7 @@ eslintTester.addRuleTest("lib/rules/no-yoda", {
         },
         {
             code: "if (true >= value) {}",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of >=.",
@@ -77,6 +89,7 @@ eslintTester.addRuleTest("lib/rules/no-yoda", {
         },
         {
             code: "var foo = (5 < value) ? true : false",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of <.",
@@ -86,12 +99,34 @@ eslintTester.addRuleTest("lib/rules/no-yoda", {
         },
         {
             code: "function foo() { return (null > value); }",
+            args: ["2", "never"],
             errors: [
                 {
                     message: "Expected literal to be on the right side of >.",
                     type: "BinaryExpression"
                 }
             ]
+        },
+        {
+            code: "if (value == \"red\") {}",
+            args: ["2", "always"],
+            errors: [
+                {
+                    message: "Expected literal to be on the left side of ==.",
+                    type: "BinaryExpression"
+                }
+            ]
+        },
+        {
+            code: "if (value === true) {}",
+            args: ["2", "always"],
+            errors: [
+                {
+                    message: "Expected literal to be on the left side of ===.",
+                    type: "BinaryExpression"
+                }
+            ]
         }
+
     ]
 });

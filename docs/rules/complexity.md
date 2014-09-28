@@ -1,4 +1,4 @@
-# Limit Cyclomatic Complexity
+# Limit Cyclomatic Complexity (complexity)
 
 Cyclomatic complexity measures the number of linearly independent paths through a program's source code. This rule allows setting a cyclomatic complexity threshold.
 
@@ -55,3 +55,11 @@ If you can't determine an appropriate complexity limit for your code, then it's 
 
 * [About Complexity](http://jscomplexity.org/complexity)
 * [Complexity Analysis of JavaScript Code](http://ariya.ofilabs.com/2012/12/complexity-analysis-of-javascript-code.html)
+
+## Related Rules
+
+* [max-depth](max-depth.md)
+* [max-len](max-len.md)
+* [max-nested-callbacks](max-nested-callbacks.md)
+* [max-params](max-params.md)
+* [max-statements](max-statements.md)

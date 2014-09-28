@@ -7,12 +7,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var eslintTester = require("eslint-tester");
+var eslint = require("../../../lib/eslint"),
+    ESLintTester = require("eslint-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
+var eslintTester = new ESLintTester(eslint);
 eslintTester.addRuleTest("lib/rules/block-scoped-var", {
     valid: [
         "function f() { var a, b; { a = true; } b = a; }",
@@ -30,7 +32,17 @@ eslintTester.addRuleTest("lib/rules/block-scoped-var", {
         { code: "new Date", globals: {Date: false} },
         { code: "new Date", globals: {} },
         { code: "var eslint = require('eslint');", globals: {require: false} },
-        "function f(a) { return a.b; }"
+        "function f(a) { return a.b; }",
+        "var a = { \"foo\": 3 };",
+        "var a = { foo: 3 };",
+        "var a = { foo: 3, bar: 5 };",
+        "var a = { set foo(a){}, get bar(){} };",
+        "function f(a) { return arguments[0]; }",
+        "function f() { }; var a = f;",
+        "var a = f; function f() { };",
+        "function f(){ for(var i; i; i) i; }",
+        "function f(){ for(var a=0, b=1; a; b) a, b; }",
+        "function f(){ for(var a in {}) a; }"
     ],
     invalid: [
         { code: "function f(){ x; }", errors: [{ message: "\"x\" used outside of binding context.", type: "Identifier" }] },
@@ -40,6 +52,14 @@ eslintTester.addRuleTest("lib/rules/block-scoped-var", {
         { code: "function f() { try { var a = 0; } catch (e) { var b = a; } }", errors: [{ message: "\"a\" used outside of binding context.", type: "Identifier" }] },
         { code: "var eslint = require('eslint');", globals: {}, errors: [{ message: "\"require\" used outside of binding context.", type: "Identifier" }] },
         { code: "function f(a) { return a[b]; }", errors: [{ message: "\"b\" used outside of binding context.", type: "Identifier" }] },
-        { code: "function f() { return b.a; }", errors: [{ message: "\"b\" used outside of binding context.", type: "Identifier" }] }
+        { code: "function f() { return b.a; }", errors: [{ message: "\"b\" used outside of binding context.", type: "Identifier" }] },
+        { code: "var a = { foo: bar };", errors: [{ message: "\"bar\" used outside of binding context.", type: "Identifier" }] },
+        { code: "var a = { foo: foo };", errors: [{ message: "\"foo\" used outside of binding context.", type: "Identifier" }] },
+        { code: "var a = { bar: 7, foo: bar };", errors: [{ message: "\"bar\" used outside of binding context.", type: "Identifier" }] },
+        { code: "var a = arguments;", errors: [{ message: "\"arguments\" used outside of binding context.", type: "Identifier" }] },
+        { code: "function x(){}; var a = arguments;", errors: [{ message: "\"arguments\" used outside of binding context.", type: "Identifier" }] },
+        { code: "function z(b){}; var a = b;", errors: [{ message: "\"b\" used outside of binding context.", type: "Identifier" }] },
+        { code: "function z(){var b;}; var a = b;", errors: [{ message: "\"b\" used outside of binding context.", type: "Identifier" }] },
+        { code: "function f(){ try{}catch(e){} e }", errors: [{ message: "\"e\" used outside of binding context.", type: "Identifier" }] }
     ]
 });

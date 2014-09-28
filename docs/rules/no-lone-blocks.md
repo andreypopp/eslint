@@ -1,4 +1,4 @@
-# Disallow Unnecessary Nested Blocks
+# Disallow Unnecessary Nested Blocks (no-lone-blocks)
 
 In JavaScript, standalone code blocks delimited by curly braces do not create a new scope and have have no use. For example, these curly braces do nothing to `foo`:
 
@@ -44,7 +44,7 @@ if (foo) {
     }
 }
 
-functin bar() {
+function bar() {
     baz();
 }
 ```

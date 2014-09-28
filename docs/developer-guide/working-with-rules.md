@@ -6,6 +6,7 @@ Each ESLint rule has two files: a source file in the `lib/rules` directory and a
 /**
  * @fileoverview Rule to flag use of an empty block statement
  * @author Nicholas C. Zakas
+ * @copyright 2014 Nicholas C. Zakas. All rights reserved.
  */
 "use strict";
 
@@ -118,6 +119,7 @@ The basic pattern for a rule unit test file is:
 /**
  * @fileoverview Tests for no-with rule.
  * @author Nicholas C. Zakas
+ * @copyright 2014 Nicholas C. Zakas. All rights reserved.
  */
 "use strict";
 
@@ -125,12 +127,14 @@ The basic pattern for a rule unit test file is:
 // Requirements
 //------------------------------------------------------------------------------
 
-var eslintTester = require("eslint-tester");
+var eslint = require("../../../lib/eslint"),
+    ESLintTester = require("eslint-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
+var eslintTester = new ESLintTester(eslint);
 eslintTester.addRuleTest("lib/rules/block-scoped-var", {
 
     // Examples of code that should not trigger the rule
@@ -250,5 +254,5 @@ The thing that makes ESLint different from other linters is the ability to defin
 Runtime rules are written in the same format as all other rules. Create your rule as you would any other and then follow these steps:
 
 1. Place all of your runtime rules in the same directory (i.e., `eslint_rules`).
-2. Create a [configuration file](../command-line-interface/config-files.md) and specify your rule ID warning level under the `rules` key. Your rule will not run unless it has a value of `1` or `2` in the configuration file.
+2. Create a [configuration file](../configuring) and specify your rule ID error level under the `rules` key. Your rule will not run unless it has a value of `1` or `2` in the configuration file.
 3. Run the [command line interface](../command-line-interface) using the `--rulesdir` option to specify the location of your runtime rules.

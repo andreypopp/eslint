@@ -1,4 +1,4 @@
-# Ensures Callback Error Handling
+# Ensures Callback Error Handling (handle-callback-err)
 
 In node, a common pattern for dealing with asynchronous behavior is called the callback pattern.
 This pattern expects as the first argument of the callback an `Error` object, which may be `null`.
@@ -49,6 +49,39 @@ function loadData (error, data) {
     }
 }
 ```
+
+### Advanced configuration
+
+Sometimes (especially in big projects) the name of the error variable is not consistent across the project,
+so you need a more flexible configuration to ensure all unhandled error getting recognized by this rule.
+
+If the configured name of the error variable begins with a `^` it is considered to be a regexp pattern.
+
+**Examples for valid configurations:**
+
+1. Rule configured to warn if an unhandled error is detected where the name of the error variable can be `err`, `error` or `anySpecificError`.
+
+    ```js
+    // ...
+    "handle-callback-err": [2, "^(err|error|anySpecificError)$" ]
+    // ...
+    ```
+
+2. Rule configured to warn if an unhandled error is detected where the name of the error variable ends with `Error` (e. g. `connectionError` or `validationError` will match).
+
+    ```js
+    // ...
+    "handle-callback-err": [2, "^.+Error$" ]
+    // ...
+    ```
+
+3. Rule configured to warn if an unhandled error is detected where the name of the error variable matches any string that contains `err` or `Err` (e. g. `err`, `error`, `anyError`, `some_err` will match).
+
+    ```js
+    // ...
+    "handle-callback-err": [2, "^.*(e|E)rr" ]
+    // ...
+    ```
 
 ## When Not To Use This Rule
 

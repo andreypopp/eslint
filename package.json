@@ -1,6 +1,6 @@
 {
   "name": "eslint-jsx",
-  "version": "0.4.5",
+  "version": "0.8.2",
   "author": "Nicholas C. Zakas <nicholas+npm@nczconsulting.com>",
   "description": "An Esprima-based pattern checker for JavaScript.",
   "bin": {
@@ -32,33 +32,39 @@
   "homepage": "http://eslint.org",
   "bugs": "https://github.com/eslint/eslint/issues/",
   "dependencies": {
-    "optionator": "~0.1.1",
-    "estraverse-jsx": "git+https://github.com/andreypopp/estraverse#jsx",
-    "esprima-fb": "^3001.1.0-dev-harmony-fb",
+    "chalk": "~0.5.1",
+    "debug": "^2.0.0",
+    "doctrine": "^0.5.2",
     "escope": "git+https://github.com/andreypopp/escope#pluggable-traverser",
-    "glob": "~3.2.7",
-    "js-yaml": "~3.0.1",
-    "strip-json-comments": "~0.1.1",
+    "esprima-fb": "^3001.1.0-dev-harmony-fb",
+    "estraverse-jsx": "git+https://github.com/andreypopp/estraverse#jsx",
+    "js-yaml": "~3.2.2",
+    "minimatch": "^1.0.0",
+    "mkdirp": "^0.5.0",
+    "object-assign": "^1.0.0",
+    "optionator": "^0.4.0",
+    "strip-json-comments": "~1.0.1",
     "text-table": "~0.2.0",
-    "chalk": "~0.4.0",
-    "doctrine": "~0.5.0"
+    "user-home": "^1.0.0",
+    "xml-escape": "~1.0.0"
   },
   "devDependencies": {
-    "sinon": "1.7.3",
-    "mocha": "~1.13.0",
-    "chai": "~1.8.1",
-    "shelljs": "~0.2",
-    "jsonlint": "~1.6.0",
-    "istanbul": "~0.2.3",
-    "dateformat": "~1.0.7-1.2.3",
-    "browserify": "~3.20.0",
-    "mocha-phantomjs": "~3.3.1",
-    "phantomjs": "~1.9.2-6",
-    "eslint-tester": "latest",
-    "brfs": "0.0.9",
-    "through": "~2.3.4",
     "beefy": "~1.0.0",
-    "shelljs-nodecli": "~0.1.0"
+    "brfs": "0.0.9",
+    "browserify": "^5.11.2",
+    "chai": "^1.9.1",
+    "dateformat": "^1.0.8",
+    "eslint-tester": "^0.2.1",
+    "istanbul": "^0.3.2",
+    "jsonlint": "^1.6.2",
+    "mocha": "~1.13.0",
+    "mocha-phantomjs": "^3.5.0",
+    "phantomjs": "^1.9.9",
+    "proxyquire": "^1.0.0",
+    "shelljs": "^0.3.0",
+    "shelljs-nodecli": "~0.1.0",
+    "sinon": "^1.10.3",
+    "through": "^2.3.6"
   },
   "keywords": [
     "ast",
@@ -67,5 +73,8 @@
     "ecmascript"
   ],
   "preferGlobal": true,
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  }
 }

@@ -7,12 +7,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var eslintTester = require("eslint-tester");
+var eslint = require("../../../lib/eslint"),
+    ESLintTester = require("eslint-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
+var eslintTester = new ESLintTester(eslint);
 eslintTester.addRuleTest("lib/rules/no-else-return", {
     valid: [
         "function foo() { if (true) { if (false) { return x; } } else { return y; } }",
@@ -22,8 +24,8 @@ eslintTester.addRuleTest("lib/rules/no-else-return", {
         "function foo() { if (true) notAReturn(); else return y; }"
     ],
     invalid: [
-        { code: "function foo() { if (true) { return x; } else { return y; } }", errors: [{ message: "Unexpected 'else' after 'return'​.", type: "BlockStatement"}] },
-        { code: "function foo() { if (true) { var x = bar; return x; } else { var y = baz; return y; } }", errors: [{ message: "Unexpected 'else' after 'return'​.", type: "BlockStatement"}] },
-        { code: "function foo() { if (true) return x; else return y; }", errors: [{ message: "Unexpected 'else' after 'return'​.", type: "ReturnStatement"}] }
+        { code: "function foo() { if (true) { return x; } else { return y; } }", errors: [{ message: "Unexpected 'else' after 'return'.", type: "BlockStatement"}] },
+        { code: "function foo() { if (true) { var x = bar; return x; } else { var y = baz; return y; } }", errors: [{ message: "Unexpected 'else' after 'return'.", type: "BlockStatement"}] },
+        { code: "function foo() { if (true) return x; else return y; }", errors: [{ message: "Unexpected 'else' after 'return'.", type: "ReturnStatement"}] }
     ]
 });

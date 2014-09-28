@@ -1,4 +1,4 @@
-# Enforce Quote Style
+# Enforce Quote Style (quotes)
 
 Enforces coding style that string literals are delimited with single or double quotes.
 
@@ -10,6 +10,7 @@ var single = 'single';
 ```
 
 The third parameter enables an exception to the rule to avoid escaping quotes. For example, when `"single"` is the standard, this option allows the use of double quotes to avoid escaping single quotes. This option can have the value `"avoid-escape"` and is off by default.
+
 ```js
 [2, "single", "avoid-escape"]
 ```
@@ -49,4 +50,3 @@ var single = 'a string containing "double" quotes';
 // When [1, "single", "avoid-escape"]
 var double = "a string containing 'single' quotes";
 ```
-

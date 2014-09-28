@@ -1,4 +1,4 @@
-# Disallow creation of dense arrays using the `Array` constructor
+# Disallow creation of dense arrays using the `Array` constructor (no-array-constructor)
 
 Use of the `Array` constructor to construct a new array is generally
 discouraged in favour of array literal notation because of the single-argument
@@ -32,3 +32,8 @@ new Array(someOtherArray.length)
 
 This rule enforces a nearly universal stylistic concern. That being said, this
 rule may be disabled if the constructor style is preferred.
+
+## Related Rules
+
+* [no-new-object](no-new-object.md)
+* [no-new-wrappers](no-new-wrappers.md)

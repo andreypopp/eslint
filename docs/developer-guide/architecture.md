@@ -4,7 +4,7 @@ At a high level, there are a few key parts to ESLint:
 
 * `bin/eslint.js` - this is the file that actually gets executed with the command line utility. It's a dumb wrapper that does nothing more than bootstrap ESLint, passing the command line arguments to `cli`. This is intentionally small so as not to require heavy testing.
 * `lib/cli.js` - this is the heart of the ESLint CLI. It takes an array of arguments and then uses `eslint` to execute the commands. By keeping this as a separate utility, it allows others to effectively call ESLint from within another Node.js program as if it were done on the command line. The main call is `cli.execute()`. This is also the part that does all the file reading, directory traversing, input, and output.
-* `lib/eslint.js` - this is the core `eslint` object that does code verifying based on configuration options. This file does not file I/O and does not interact with the `console` at all. For other Node.js programs that have JavaScript text to verify, they would be able to use this interface directly.
+* `lib/eslint.js` - this is the core `eslint` object that does code verifying based on configuration options. This file does no file I/O and does not interact with the `console` at all. For other Node.js programs that have JavaScript text to verify, they would be able to use this interface directly.
 
 ## The `cli` object
 
@@ -16,15 +16,35 @@ This object's responsibilities include:
 
 * Interpreting command line arguments
 * Reading from the file system
-* Loading rule definitions
 * Outputting to the console
-* Reading configuration information from config files (including `.eslintrc`)
+* Outputting to the filesystem
+* Use a formatter
 * Returning the correct exit code
 
 This object may not:
 
 * Call `process.exit()` directly
 * Perform any asynchronous operations
+
+## The `CLIEngine` object
+
+The `CLIEngine` type represents the core functionality of the CLI except that it reads nothing from the command line and doesn't output anything by default. Instead, it accepts many (but not all) of the arguments that are passed into the CLI. It reads both configuration and source files as well as managing the environment that is passed into the `eslint` object.
+
+The main method of the `CLIEngine` is `executeOnFiles()`, which accepts an array of file and directory names to run the linter on.
+
+This object's responsibilities include:
+
+* Managing the execution environment for `eslint`
+* Reading from the file system
+* Loading rule definitions
+* Reading configuration information from config files (including `.eslintrc`)
+
+This object may not:
+
+* Call `process.exit()` directly
+* Perform any asynchronous operations
+* Output to the console
+* Use formatters
 
 ## The `eslint` object
 
@@ -49,7 +69,7 @@ This object may not:
 
 ## Rules
 
-Individual rules are the most specialized part of the ESLint architecture. Rules can do very little, they are simply a set of instructions executed against an AST that is provided. They do get some context information passed in, but the primary responsibility of a rule is to inspect the AST and report warnings. 
+Individual rules are the most specialized part of the ESLint architecture. Rules can do very little, they are simply a set of instructions executed against an AST that is provided. They do get some context information passed in, but the primary responsibility of a rule is to inspect the AST and report warnings.
 
 These objects' responsibilities are:
 

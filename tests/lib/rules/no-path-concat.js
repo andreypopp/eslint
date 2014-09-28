@@ -8,17 +8,21 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var eslintTester = require("eslint-tester");
+var eslint = require("../../../lib/eslint"),
+    ESLintTester = require("eslint-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
+var eslintTester = new ESLintTester(eslint);
 eslintTester.addRuleTest("lib/rules/no-path-concat", {
 
     valid: [
         "var fullPath = dirname + \"foo.js\";",
-        "var fullPath = __dirname == \"foo.js\";"
+        "var fullPath = __dirname == \"foo.js\";",
+        "if (fullPath === __dirname) {}",
+        "if (__dirname === fullPath) {}"
     ],
 
     invalid: [
